@@ -357,13 +357,13 @@ HotspotRenderer.prototype.focus_ = function(id) {
 
 
   var outer = hotspot.getObjectByName('inner');
-  console.log('focus');
   // change color too
   this.tween = new TWEEN.Tween(outer.material.color).to(ACTIVE_COLOR, ACTIVE_DURATION)
       .start();
   this.tween = new TWEEN.Tween(hotspot.scale).to(NORMAL_SCALE, FOCUS_DURATION)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .start();
+      // check if the event came from a click or a hover
       if(!clicked) {
         timeForHotspotClick = setTimeout(function(){
             this.emit('click', id); 
@@ -378,13 +378,12 @@ HotspotRenderer.prototype.blur_ = function(id) {
   //     .easing(TWEEN.Easing.Quadratic.InOut)
   //     .start();
 
+
+  clicked = false;
   // change color too
   var outer = hotspot.getObjectByName('inner');
   this.tween = new TWEEN.Tween(outer.material.color).to(INACTIVE_COLOR, ACTIVE_DURATION)
       .start();
-
-  clicked = false;
-  console.log('blur');
   // Reference: https://github.com/googlevr/vrview/issues/145
   this.tween = new TWEEN.Tween(hotspot.scale).to(NORMAL_SCALE, FOCUS_DURATION)
       .easing(TWEEN.Easing.Quadratic.InOut)
@@ -398,7 +397,6 @@ HotspotRenderer.prototype.down_ = function(id) {
   // Become active.
   var hotspot = this.hotspots[id];
   var outer = hotspot.getObjectByName('inner');
-  console.log('down');
   clicked = true;
   this.tween = new TWEEN.Tween(outer.material.color).to(ACTIVE_COLOR, ACTIVE_DURATION)
       .start();
@@ -407,8 +405,6 @@ HotspotRenderer.prototype.down_ = function(id) {
 HotspotRenderer.prototype.up_ = function(id) {
   // Become inactive.
   var hotspot = this.hotspots[id];
-  
-  console.log('up');
   
   var outer = hotspot.getObjectByName('inner');
   clicked = true;
