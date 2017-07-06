@@ -350,17 +350,43 @@ HotspotRenderer.prototype.focus_ = function(id) {
   var hotspot = this.hotspots[id];
 
   // Tween scale of hotspot.
-  this.tween = new TWEEN.Tween(hotspot.scale).to(FOCUS_SCALE, FOCUS_DURATION)
+  // this.tween = new TWEEN.Tween(hotspot.scale).to(FOCUS_SCALE, FOCUS_DURATION)
+  //     .easing(TWEEN.Easing.Quadratic.InOut)
+  //     .start();
+
+
+  var outer = hotspot.getObjectByName('inner');
+
+  // change color too
+  this.tween = new TWEEN.Tween(outer.material.color).to(ACTIVE_COLOR, ACTIVE_DURATION)
+      .start();
+  this.tween = new TWEEN.Tween(hotspot.scale).to(NORMAL_SCALE, FOCUS_DURATION)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .start();
+      timeForHotspotClick = setTimeout(function(){
+          this.emit('click', id);
+      }.bind(this),2000)
 };
 
 HotspotRenderer.prototype.blur_ = function(id) {
   var hotspot = this.hotspots[id];
 
+  // this.tween = new TWEEN.Tween(hotspot.scale).to(NORMAL_SCALE, FOCUS_DURATION)
+  //     .easing(TWEEN.Easing.Quadratic.InOut)
+  //     .start();
+
+  // change color too
+  var outer = hotspot.getObjectByName('inner');
+  this.tween = new TWEEN.Tween(outer.material.color).to(INACTIVE_COLOR, ACTIVE_DURATION)
+      .start();
+
+  // Reference: https://github.com/googlevr/vrview/issues/145
   this.tween = new TWEEN.Tween(hotspot.scale).to(NORMAL_SCALE, FOCUS_DURATION)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .start();
+      if(timeForHotspotClick ){
+          clearTimeout(timeForHotspotClick );
+      }
 };
 
 HotspotRenderer.prototype.down_ = function(id) {
