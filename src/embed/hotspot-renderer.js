@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var clicked = false;
 var EventEmitter = require('eventemitter3');
 var TWEEN = require('tween.js');
 
@@ -356,16 +357,18 @@ HotspotRenderer.prototype.focus_ = function(id) {
 
 
   var outer = hotspot.getObjectByName('inner');
-
+  console.log('focus');
   // change color too
   this.tween = new TWEEN.Tween(outer.material.color).to(ACTIVE_COLOR, ACTIVE_DURATION)
       .start();
   this.tween = new TWEEN.Tween(hotspot.scale).to(NORMAL_SCALE, FOCUS_DURATION)
       .easing(TWEEN.Easing.Quadratic.InOut)
       .start();
-      timeForHotspotClick = setTimeout(function(){
-          this.emit('click', id);
-      }.bind(this),2000)
+      if(!clicked) {
+        timeForHotspotClick = setTimeout(function(){
+            this.emit('click', id); 
+        }.bind(this),2000)
+      }
 };
 
 HotspotRenderer.prototype.blur_ = function(id) {
@@ -380,6 +383,8 @@ HotspotRenderer.prototype.blur_ = function(id) {
   this.tween = new TWEEN.Tween(outer.material.color).to(INACTIVE_COLOR, ACTIVE_DURATION)
       .start();
 
+  clicked = false;
+  console.log('blur');
   // Reference: https://github.com/googlevr/vrview/issues/145
   this.tween = new TWEEN.Tween(hotspot.scale).to(NORMAL_SCALE, FOCUS_DURATION)
       .easing(TWEEN.Easing.Quadratic.InOut)
@@ -393,7 +398,8 @@ HotspotRenderer.prototype.down_ = function(id) {
   // Become active.
   var hotspot = this.hotspots[id];
   var outer = hotspot.getObjectByName('inner');
-
+  console.log('down');
+  clicked = true;
   this.tween = new TWEEN.Tween(outer.material.color).to(ACTIVE_COLOR, ACTIVE_DURATION)
       .start();
 };
@@ -401,8 +407,11 @@ HotspotRenderer.prototype.down_ = function(id) {
 HotspotRenderer.prototype.up_ = function(id) {
   // Become inactive.
   var hotspot = this.hotspots[id];
+  
+  console.log('up');
+  
   var outer = hotspot.getObjectByName('inner');
-
+  clicked = true;
   this.tween = new TWEEN.Tween(outer.material.color).to(INACTIVE_COLOR, ACTIVE_DURATION)
       .start();
 };
